@@ -1,6 +1,6 @@
 //  
 //
-//  OBUMC 
+//  OBUMC Alexa skill
 //
 //
 
@@ -12,18 +12,18 @@ var podcastFeed = [
 
 // Entry-point for the Lambda
 exports.handler = function(event, context) {
-    var player = new SimplePlayer(event, context);
+    var player = new OBUMCSkill(event, context);
     player.handle();
 };
 
-// The SimplePlayer has helpful routines for interacting with Alexa, within minimal overhead
-var SimplePlayer = function (event, context) {
+//  
+var OBUMCSkill = function (event, context) {
     this.event = event;
     this.context = context;
 };
 
 // Handles an incoming Alexa request
-SimplePlayer.prototype.handle = function () {
+OBUMCSkill.prototype.handle = function () {
     var requestType = this.event.request.type;
     var userId = this.event.context ? this.event.context.System.user.userId : this.event.session.user.userId;
     var podcastIndex;
@@ -96,7 +96,7 @@ SimplePlayer.prototype.handle = function () {
  * @param message
  * @param repromptMessage
  */
-SimplePlayer.prototype.say = function (message, repromptMessage) {
+OBUMCSkill.prototype.say = function (message, repromptMessage) {
     var response = {
         version: "1.0",
         response: {
@@ -124,7 +124,7 @@ SimplePlayer.prototype.say = function (message, repromptMessage) {
  * @param token An identifier for the track we are going to play next
  * @param previousToken This should only be set if we are doing an ENQUEUE or REPLACE_ENQUEUED
  */
-SimplePlayer.prototype.play = function (audioURL, offsetInMilliseconds, playBehavior, token, previousToken) {
+OBUMCSkill.prototype.play = function (audioURL, offsetInMilliseconds, playBehavior, token, previousToken) {
     var response = {
         version: "1.0",
         response: {
@@ -150,7 +150,7 @@ SimplePlayer.prototype.play = function (audioURL, offsetInMilliseconds, playBeha
 };
 
 // Stops the playback of Audio
-SimplePlayer.prototype.stop = function () {
+OBUMCSkill.prototype.stop = function () {
     var response = {
         version: "1.0",
         response: {
@@ -167,12 +167,12 @@ SimplePlayer.prototype.stop = function () {
 };
 
 // Saves information into our super simple, not-production-grade cache
-SimplePlayer.prototype.saveLastPlayed = function (userId, lastPlayed) {
+OBUMCSkill.prototype.saveLastPlayed = function (userId, lastPlayed) {
     lastPlayedByUser[userId] = lastPlayed;
 };
 
 // Load information from our super simple, not-production-grade cache
-SimplePlayer.prototype.loadLastPlayed = function (userId) {
+OBUMCSkill.prototype.loadLastPlayed = function (userId) {
     var lastPlayed = null;
     if (userId in lastPlayedByUser) {
         lastPlayed = lastPlayedByUser[userId];
