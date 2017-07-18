@@ -1,12 +1,13 @@
-// This is only initialized when the Lambda is, so it is preserved across calls
-// It is NOT a real database, but can be used for testing, as JavaScript Lambdas tend to live for a few hours
-// Stay tuned for a more sophisticated example that uses DynamoDB
+//  
+//
+//  OBUMC 
+//
+//
+
 var lastPlayedByUser = {};
 
 var podcastFeed = [
-    "https://feeds.soundcloud.com/stream/318108640-user-652822799-episode-012-alexa-skill-certification-with-sameer-lalwanilexa-dev-chat-final-mix.mp3",
-    "https://feeds.soundcloud.com/stream/314247951-user-652822799-episode-011-alexa-smart-home-partner-network-with-zach-parker.mp3",
-    "https://feeds.soundcloud.com/stream/309340878-user-652822799-episode-010-building-an-alexa-skill-with-flask-ask-with-john-wheeler.mp3"
+    "https://s3.amazonaws.com/pecore/Because-He-Lives-All-Fear-is-Gone.mp3"
 ];
 
 // Entry-point for the Lambda
