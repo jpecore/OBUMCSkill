@@ -1,36 +1,23 @@
 {
-  "name": "alexa-sdk",
-  "version": "1.0.11",
-  "description": "Alexa Skill SDK for Node.js",
+  "name": "OBUMCskill",
+  "version": "1.0.0",
+  "description": "Old Bridge United Methodist skill.",
   "main": "index.js",
-  "contributors": [
-    {
-      "name": "Joe Pecore",
-      "email": "joseph.pecore@gmail.com"
-    }
-  ],
-  "dependencies": {
-    "aws-sdk": "^2.4.7",
-    "i18next": "^3.4.1",
-    "i18next-sprintf-postprocessor": "^0.2.2"
-  },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jpecore/OBUMCSkill.git"
-  },
   "keywords": [
-    "Alexa",
+    "alexa",
     "skill",
-    "sdk"
+    "obumc"
   ],
-  "author": "Joe Pecore",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/jpecore/OBUMCSkill/issues"
+  "author": "joe Pecore",
+  "license": "See license in ../LICENSE.txt",
+  "dependencies": {
+    "alexa-sdk": "^1.0.4"
   },
-  "homepage": "https://github.com/jpecore/OBUMCSkill#readme"
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/jpecore/OBUMCSkill"
+  }
 }
