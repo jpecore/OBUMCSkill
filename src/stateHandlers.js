@@ -43,22 +43,20 @@ var stateHandlers = {
             controller.play.call(this);
         },
         'ReadWelcome' : function () {
-            getHtmlOBUMCpage("http://www.obumc.org/message-from-pastor", (page) => {
-               
-                 var welcomeText = ParseWelcomeMsg(page);
-        	 this.attributes['welcomeText'] = welcomeText;
-        	// console.log ("welcomeText saving " + welcomeText)
+            getHtmlOBUMCpage("http://www.oldbridgechurch.org/im-new-here/", (page) =>   {           
+                 var welcomeTexts = ParseWelcomeMsg(page);
+        	 this.attributes['welcomeText'] = welcomeTexts;
+        	//  console.log ("welcomeText saving " + welcomeText)
                 controller.ReadWelcome.call(this);
-            });
-            
+            });            
            
         },
         'Services' : function () {
-            getHtmlOBUMCpage("http://www.obumc.org/sunday-morning-services", (page) => {
+            getHtmlOBUMCpage("http://www.oldbridgechurch.org/worship/sunday-services/", (page) => {
              
                  var Services = ParseServiceMsg(page);
         	 this.attributes['ServicesText'] = Services;
-        	// console.log ("welcomeText saving " + welcomeText)
+        	  console.log ("ServicesText saving " + Services)
                 controller.Services.call(this);
             });
             
@@ -75,6 +73,17 @@ var stateHandlers = {
            
           
        },
+       'Blog' : function () {
+           getHtmlOBUMCpage("http://thebridge.oldbridgechurch.org/isaiah-3322new-living-translation-nlt/", (page) => {
+               
+         var Blog = ParseBlogMsg(page);
+      	 this.attributes['Blog'] = Blog;
+      	 console.log ("Blog saving " + Blog)
+              controller.Blog.call(this);
+          });
+          
+         
+      },
         
         'AMAZON.HelpIntent' : function () {
             var message = 'Welcome to the OUBMC sermons . You can say, play latest sermon, hear the welcome messaage, find out when worship services are held, ask for contact information. How can I help you today?';
@@ -233,6 +242,13 @@ var controller = function () {
         Contact: function () {
            
             var message =  this.attributes['ContactText'] ;           
+            this.response.speak(message);
+            this.emit(':responseReady');
+        },
+ 
+        Blog: function () {
+           
+            var message =  this.attributes['Blog'] ;           
             this.response.speak(message);
             this.emit(':responseReady');
         },
@@ -426,20 +442,17 @@ function shuffleOrder(callback) {
 function ParseWelcomeMsg  (HTMLpage) {
 
     var retString = "", endIndex, startIndex = 0;
-    var Firstdelimiter = "Welcome Visitors";
-    var Lastdelimiter = "Robinson, Lead Pastor</font>";
+    var Firstdelimiter = "We try to make you feel comfortable";
+    var Lastdelimiter = "ready for the rest of the week.";
     var delimiterSize = 1;
    
-    var eventText = HTMLpage.substring( HTMLpage.indexOf(Firstdelimiter), HTMLpage.indexOf(Lastdelimiter)+ 28 );
+    var eventText = HTMLpage.substring( HTMLpage.indexOf(Firstdelimiter), HTMLpage.indexOf(Lastdelimiter)+ Lastdelimiter.length );
     var eventText = removeHTML(eventText);
    
     if (eventText.length == 0) {
 	return "";
     }
-     
  	// replace dashes returned in text from API
-	
-	
 	eventText = eventText.replace(/\n/g, '');
 	eventText = eventText.replace(/\r/g, '');   // \r\n\t\
 	eventText = eventText.replace(/\t/g, ' ');
@@ -480,6 +493,8 @@ function ParseServiceMsg  (HTMLpage) {
 	eventText = eventText.replace(/\r/g, '');   // \r\n\t\
 	eventText = eventText.replace(/\t/g, ' ');
 	eventText = eventText.replace(/\&nbsp;/g, ' ');
+	eventText =  eventText.replace(/<li\/>/g, 'break');
+	
 	 
 	
 	// console.log("parsing eventText ");
@@ -511,6 +526,31 @@ function ParseContactMsg  (HTMLpage) {
 	 return eventText;
 }
     
+
+function ParseBlogMsg  (HTMLpage) {
+
+    var retString = "", endIndex, startIndex = 0;
+    var Firstdelimiter = '<div class="resurrect-entry-content resurrect-clearfix">';
+    var Lastdelimiter = '<div class="sharedaddy sd-sharing-enabled">';
+   
+   
+    var eventText = HTMLpage.substring( HTMLpage.indexOf(Firstdelimiter) + Firstdelimiter.length, HTMLpage.indexOf(Lastdelimiter) );
+    var eventText = removeHTML(eventText);
+   
+    if (eventText.length == 0) {
+	return "";
+    }
+     
+	eventText = eventText.replace(/\n/g, '');
+	eventText = eventText.replace(/\r/g, '');   // \r\n\t\
+	eventText = eventText.replace(/\t/g, ' ');
+	eventText = eventText.replace(/\&nbsp;/g, ' ');
+	 
+	
+	// console.log("parsing eventText ");
+	// console.log ("from ParseWelcomeMsg eventText: " + eventText);
+	 return eventText;
+}
      
  
 function removeHTML(s) {

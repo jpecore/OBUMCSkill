@@ -28,30 +28,24 @@ conversation(opts)
 //
 .userSays('ReadWelcome') //  
 .ssmlResponse //  
-.shouldContain('Welcome Visitors')
+.shouldContain('We try to make you feel comfortable')
 .shouldNotContain('<break time=\'1s\'/>   <break')
 
 //
 // Test
 //
 .userSays('Services') //  
-.plainResponse //  
+.ssmlResponse //  
 .shouldContain('services')
+ 
+
  //
 // Test
 //
-.userSays('Contact') //  
-.plainResponse //  
-.shouldContain('Old Bridge Road')
-
-
-
-//
-// Test
-//
-.userSays('PlayAudio') //  
-.plainResponse //  
-.shouldContain('play ')
+.userSays('Blog') //  
+.ssmlResponse //  
+.shouldContain('Good morning')
+ 
 
 
 
