@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var Alexa = require('alexa-sdk');
 var audioData = require('./audioAssets');
@@ -22,12 +22,28 @@ var stateHandlers = {
             // Change state to START_MODE
             this.handler.state = constants.states.START_MODE;
 
-            var message = 'Welcome to the OBUMC. You can say, play latest sermon, hear the welcome messaage, find out when worship services are held, ask for contact information. How can I help you today?';
-            var reprompt = 'You can say, play the sermon, to begin.';
-
-            this.response.speak(message).listen(reprompt);
-            this.emit(':responseReady');
+            var message = 'Welcome to the Old Bridge United Methodist Church skill. You can say, read the welcome messaage, when are worship services are held. How can I help you today?';
+            var reprompt = 'How can I help you?';
+            this.emit(':ask', message, reprompt);
+          // this.response.speak(message).listen(reprompt);
+           // this.emit(':responseReady');
         },
+        
+       // PlayAudio begin sermaon
+       // PlayAudio begin the sermaon
+       // PlayAudio begin playing the sermaon
+       // PlayAudio start sermaon
+       // PlayAudio start the sermon
+       // PlayAudio start playing the sermon
+       // PlayAudio play the sermon
+       // PlayAudio to begin sermon
+       // PlayAudio to begin the sermon
+       // PlayAudio to begin playing the sermon
+       // PlayAudio to start sermon
+       // PlayAudio to start the sermon
+       // PlayAudio to start playing the sermon
+       // PlayAudio to play the sermon
+       // PlayAudio to play sermon
         'PlayAudio' : function () {
             if (!this.attributes['playOrder']) {
                 // Initialize Attributes if undefined.
@@ -45,70 +61,78 @@ var stateHandlers = {
         'ReadWelcome' : function () {
             getHtmlOBUMCpage("http://www.oldbridgechurch.org/im-new-here/", (page) =>   {           
                  var welcomeTexts = ParseWelcomeMsg(page);
-        	 this.attributes['welcomeText'] = welcomeTexts;
-        	//  console.log ("welcomeText saving " + welcomeText)
+        	 this.attributes['emitText'] = welcomeTexts;
+        	 this.handler.state = constants.states.START_MODE;
+        	// console.log ("welcomeText saving " + welcomeText)
                 controller.ReadWelcome.call(this);
-            });            
-           
+            });                      
         },
         'Services' : function () {
-            getHtmlOBUMCpage("http://www.oldbridgechurch.org/worship/sunday-services/", (page) => {
-             
+            getHtmlOBUMCpage("http://www.oldbridgechurch.org/worship/sunday-services/", (page) => {       
                  var Services = ParseServiceMsg(page);
-        	 this.attributes['ServicesText'] = Services;
+        	 this.attributes['emitText'] = Services;
+        	 this.handler.state = constants.states.START_MODE;
         	  console.log ("ServicesText saving " + Services)
                 controller.Services.call(this);
             });
-            
-           
         },
+        //
+        //Contact contact
+        //Contact what is their contact
+        //Contact how do I contact old bridge
+        //Contact how do I contact them
+        //Contact how can I contact old bridge
+        //Contact how can I contact them
         'Contact' : function () {
             getHtmlOBUMCpage("http://obumc.org/Contact-Us", (page) => {
                 
                 var Contact = ParseContactMsg(page);
-       	 this.attributes['ContactText'] = Contact;
-       	// console.log ("welcomeText saving " + welcomeText)
+                this.handler.state = constants.states.START_MODE;
+          	 this.attributes['emitText'] = Contact;
+          	// console.log ("welcomeText saving " + welcomeText)
                controller.Contact.call(this);
-           });
-           
-          
+           });   
        },
        'Blog' : function () {
            getHtmlOBUMCpage("http://thebridge.oldbridgechurch.org/isaiah-3322new-living-translation-nlt/", (page) => {
                
          var Blog = ParseBlogMsg(page);
-      	 this.attributes['Blog'] = Blog;
+         this.handler.state = constants.states.START_MODE;
+      	 this.attributes['emitText'] = Blog;
       	 console.log ("Blog saving " + Blog)
               controller.Blog.call(this);
-          });
-          
-         
-      },
-        
+          });            
+      },   
         'AMAZON.HelpIntent' : function () {
-            var message = 'Welcome to the OUBMC sermons . You can say, play latest sermon, hear the welcome messaage, find out when worship services are held, ask for contact information. How can I help you today?';
-            this.response.speak(message);
-            this.emit(':responseReady');
+            var message = 'You can say, read welcome messaage, or when are worship services. How can I help you today?';
+            var reprompt = "How can I help?"
+          // this.response.speak(message);
+           // this.emit(':responseReady');
+            this.emit(':ask', message, reprompt);
         },
         'AMAZON.StopIntent' : function () {
             var message = 'Good bye.';
             this.response.speak(message);
+            this.handler.state = constants.states.START_MODE;
             this.emit(':responseReady');
         },
         'AMAZON.CancelIntent' : function () {
             var message = 'Good bye.';
             this.response.speak(message);
+            this.handler.state = constants.states.START_MODE;
             this.emit(':responseReady');
         },
         'SessionEndedRequest' : function () {
-            // No session ended logic
+            this.handler.state = constants.states.START_MODE;
         },
         'Unhandled' : function () {
-            var message = 'Sorry, I could not understand. Please say help for more info.';
+            var message = 'Sorry, I did not understand.';
             this.response.speak(message).listen(message);
             this.emit(':responseReady');
         }
     }),
+    
+    
     playModeIntentHandlers : Alexa.CreateStateHandler(constants.states.PLAY_MODE, {
         /*
 	 * All Intent Handlers for state : PLAY_MODE
@@ -123,6 +147,7 @@ var stateHandlers = {
 	     */
             var message;
             var reprompt;
+            this.handler.state = constants.states.START_MODE;
             if (this.attributes['playbackFinished']) {
                 this.handler.state = constants.states.START_MODE;
                 message = 'Welcome to the OUBMC skill. You can say, play latest sermon, hear the welcome messaage, find out when worship services are held, ask for contact information. How can I help you today?';
@@ -138,12 +163,12 @@ var stateHandlers = {
             this.emit(':responseReady');
         },
        
-  'PlayAudio' : function () { controller.play.call(this) }, 
+        'PlayAudio' : function () { controller.play.call(this) }, 
         'AMAZON.NextIntent' : function () { controller.playNext.call(this) },
         'AMAZON.PreviousIntent' : function () { controller.playPrevious.call(this) },
         'AMAZON.PauseIntent' : function () { controller.stop.call(this) },
-        'AMAZON.StopIntent' : function () { controller.stop.call(this) },
-        'AMAZON.CancelIntent' : function () { controller.stop.call(this) },
+        'AMAZON.StopIntent' :    function () {   controller.stop.call(this) },
+        'AMAZON.CancelIntent' :  function () { controller.stop.call(this) },
         'AMAZON.ResumeIntent' : function () { controller.play.call(this) },
         'AMAZON.LoopOnIntent' : function () { controller.loopOn.call(this) },
         'AMAZON.LoopOffIntent' : function () { controller.loopOff.call(this) },
@@ -153,16 +178,19 @@ var stateHandlers = {
         'AMAZON.HelpIntent' : function () {
             // This will be called while audio is playing and a user says "ask
 	    // <invocation_name> for help"
-            var message = 'You are listening to the OUBMC sermons. You can say, Next or Previous to navigate through the playlist. ' +
+            var message = 'You are listening to the OUBMC sermons. ' +
                 'At any time, you can say Pause to pause the audio and Resume to resume.';
             this.response.speak(message).listen(message);
+            this.handler.state = constants.states.START_MODE;
             this.emit(':responseReady');
         },
         'SessionEndedRequest' : function () {
+            this.handler.state = constants.states.START_MODE;
             // No session ended logic
         },
         'Unhandled' : function () {
-            var message = 'Sorry, I could not understand. You can say, Next or Previous to navigate through the playlist.';
+            this.handler.state = constants.states.START_MODE;
+            var message = 'Sorry, I could not understand. You can say Help to get valid commands.';
             this.response.speak(message).listen(message);
             this.emit(':responseReady');
         }
@@ -200,14 +228,17 @@ var stateHandlers = {
         'AMAZON.StopIntent' : function () {
             var message = 'Good bye.';
             this.response.speak(message);
+            this.handler.state = constants.states.START_MODE;
             this.emit(':responseReady');
         },
         'AMAZON.CancelIntent' : function () {
             var message = 'Good bye.';
             this.response.speak(message);
+            this.handler.state = constants.states.START_MODE;
             this.emit(':responseReady');
         },
         'SessionEndedRequest' : function () {
+            this.handler.state = constants.states.START_MODE;
             // No session ended logic
         },
         'Unhandled' : function () {
@@ -221,34 +252,34 @@ var stateHandlers = {
 module.exports = stateHandlers;
 
 var controller = function () {
-    return {
+    return {	 
         ReadWelcome: function () {
             /*
 	     * read welcome page
 	     */
-          
-            var message =  this.attributes['welcomeText'] ;
+            this.handler.state = constants.states.START_MODE;
+            var message =  this.attributes['emitText'] ;
             // console.log ("welcomeText = " + message);
             this.response.speak(message);
             this.emit(':responseReady');
         },
         Services: function () {
-                    
-            var message =  this.attributes['ServicesText'] ;
+            this.handler.state = constants.states.START_MODE;
+            var message =  this.attributes['emitText'] ;
             
             this.response.speak(message);
             this.emit(':responseReady');
         },
         Contact: function () {
-           
-            var message =  this.attributes['ContactText'] ;           
+            this.handler.state = constants.states.START_MODE;
+            var message =  this.attributes['emitText'] ;           
             this.response.speak(message);
             this.emit(':responseReady');
         },
  
         Blog: function () {
-           
-            var message =  this.attributes['Blog'] ;           
+            this.handler.state = constants.states.START_MODE;
+            var message =  this.attributes['emitText'] ;           
             this.response.speak(message);
             this.emit(':responseReady');
         },
@@ -258,8 +289,8 @@ var controller = function () {
 	     * invoked. Resuming audio when stopped/paused. Next/Previous
 	     * commands issued.
 	     */
-            this.handler.state = constants.states.PLAY_MODE;
-
+         // this.handler.state = constants.states.PLAY_MODE;
+     
             if (this.attributes['playbackFinished']) {
                 // Reset to top of the playlist when reached end.
                 this.attributes['index'] = 0;
@@ -290,6 +321,7 @@ var controller = function () {
 	     * Issuing AudioPlayer.Stop directive to stop the audio. Attributes
 	     * already stored when AudioPlayer.Stopped request received.
 	     */
+            this.handler.state = constants.states.START_MODE;
             this.response.audioPlayerStop();
             this.emit(':responseReady');
         },
@@ -301,6 +333,7 @@ var controller = function () {
 	     * command is received. If reached at the end of the playlist,
 	     * choose behavior based on "loop" flag.
 	     */
+            
             var index = this.attributes['index'];
             index += 1;
             // Check for last audio file.
@@ -557,7 +590,7 @@ function removeHTML(s) {
     // console.log ("s:" + s)
     var re = /<(?:.|\n|\/)*?>/g;
      
-  //   s =  s.replace(/<font(.*)>/g, 'break');
+  // s = s.replace(/<font(.*)>/g, 'break');
      s =  s.replace(/<br\/>/g, 'break');
      s =  s.replace(/<\/div>/g, 'break');
      
@@ -569,7 +602,7 @@ function removeHTML(s) {
      s = s.replace(re, ' ');
      
       s =  s.replace(/break/gm, "<break time='1s'/>");
-     // <break time=\'1s\'/>   <break time=\'1s\'/>
+     // <break time=\'1s\'/> <break time=\'1s\'/>
     
     
     // s = s.replace(/fontend/gm, '\<\/p\>');
